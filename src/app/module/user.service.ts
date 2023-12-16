@@ -56,8 +56,6 @@ const addOrderToUser = async (userId:number,orderData:object  )=>{
     if (!user) {
         throw new Error('User not found');
     }
-
-    // Ensure the orders array is initialized
     if (!user.orders) {
         user.orders = [];
     }
