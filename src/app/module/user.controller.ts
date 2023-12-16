@@ -222,6 +222,32 @@ const getSingleUserOrder = async(req:Request, res:Response)=>{
 
 }
 
+const getOrderTotalPrice = async(req:Request, res:Response)=>{
+    const userId = parseInt(req.params.userId)
+    try {
+        const users = await userService.getSingleUserTotalPriceFromDb(userId)
+        if (!users) {
+            return res
+              .status(404)
+              .json({ success: false, message: 'No users found' });
+          } else {
+            res.status(200).json({
+              success: true,
+              message: 'users order data are retrieved',
+              data: users,
+            });
+          }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            success: false, 
+            message: 'Error in retrieving user order', 
+            error: err
+         });
+    }
+
+}
+
 export const createUserController = {
     createUser,
     allUsers,
@@ -229,5 +255,6 @@ export const createUserController = {
     updateSingleUser,
     deleteSingleUser,
     addOrderToUserController,
-    getSingleUserOrder
+    getSingleUserOrder,
+    getOrderTotalPrice
 }
