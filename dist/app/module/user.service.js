@@ -54,7 +54,6 @@ const addOrderToUser = (userId, orderData) => __awaiter(void 0, void 0, void 0, 
     if (!user) {
         throw new Error('User not found');
     }
-    // Ensure the orders array is initialized
     if (!user.orders) {
         user.orders = [];
     }
