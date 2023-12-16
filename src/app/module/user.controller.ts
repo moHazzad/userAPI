@@ -160,10 +160,47 @@ const deleteSingleUser =async (req: Request, res:Response) => {
     
 }
 
+const addOrderToUserController = async(req: Request, res:Response)=>{
+    const userId = parseInt(req.params.userId)
+    const order = req.body;
+    //console.log('order',order)
+    try {
+        const  result=await userService.addOrderToUser(userId,order)
+        if (!result) {
+            return res
+              .status(404)
+              .json({ 
+                success: false,
+                message: 'No user found',
+                error:{
+                    code: 404,
+                    details:"The user with the given id was not found."                    
+                }
+             });
+          } else {
+            res.status(200).json({
+              success: true,
+              message: 'Order placed successfully',
+              data: null,
+            });
+          }
+        
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            success: false, 
+            message: 'Error to update order', 
+            error: err
+         });
+    }
+
+}
+
 export const createUserController = {
     createUser,
     allUsers,
     singleUserById,
     updateSingleUser,
-    deleteSingleUser
+    deleteSingleUser,
+    addOrderToUserController
 }

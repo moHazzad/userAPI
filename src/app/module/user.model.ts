@@ -21,18 +21,23 @@ const userSchema = new Schema<User>({
       city: { type: String, required: true },
       country: { type: String, required: true },
     },
-
+    orders: [
+      {
+        productName: { type: String },
+        price: { type: Number },
+        quantity: { type: Number },
+      },
+    ],
 })
 
     // middleWare 
 
 userSchema.pre('save', async function (next) {
-
-    const user = this; 
-    user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
-    
-    next();
-})
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt_rounds));
+  }
+  next();
+});
 
 // to remove password field from the return doc 
 userSchema.methods.toJSON = function() {
