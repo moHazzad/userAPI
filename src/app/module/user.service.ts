@@ -30,9 +30,15 @@ const getSingleUserById = async(userId: number)=>{
 
 } 
 
+const updateUserInformation = async (userId: number, updateInfo:User)=>{
+    const result = await userModel.findOneAndUpdate({userId}, updateInfo, { new:true})
+    return result
+}
+
 
 export const userService = {
     createUserInDb,
     getAllUserUserFromDb,
-    getSingleUserById
+    getSingleUserById,
+    updateUserInformation
 }

@@ -13,14 +13,14 @@ const createUser = async(req: Request, res: Response) =>{
 
         res.status(200).json({
             success: true,
-            message: 'Student is created successfully',
+            message: 'user is created successfully',
             data: result,
           });
         
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: 'something went wrong',
+            message: 'user went wrong',
             data: err,
           });
     }
@@ -32,11 +32,11 @@ const allUsers = async(req: Request, res: Response)=>{
         if (!users) {
             return res
               .status(404)
-              .json({ success: false, message: 'No Students found' });
+              .json({ success: false, message: 'No users found' });
           } else {
             res.status(200).json({
               success: true,
-              message: 'student data are retrieved',
+              message: 'users data are retrieved',
               data: users,
             });
           }
@@ -47,18 +47,54 @@ const allUsers = async(req: Request, res: Response)=>{
 
 const singleUserById = async(req: Request, res: Response)=>{
     const userId = parseInt(req.params.userId)
-    console.log(userId,'from cosol');
     try {
         const user = await userService.getSingleUserById(userId)
         if (!user) {
             return res
               .status(404)
-              .json({ success: false, message: 'No Student found' });
+              .json({ 
+                success: false,
+                message: 'No user found',
+                error:{
+                    code: 404,
+                    details:"The user with the given ID was not found."                    
+                }
+             });
           } else {
             res.status(200).json({
               success: true,
-              message: 'single student data retrieved',
+              message: 'single user data retrieved',
               data: user,
+            });
+          }
+        
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+
+const updateSingleUser = async(req: Request, res: Response)=>{
+    const userId = parseInt(req.params.userId)
+    const updateInfo = req.body
+    try {
+        const updateUser = await userService.updateUserInformation(userId, updateInfo)
+        if (!updateUser) {
+            return res
+              .status(404)
+              .json({ 
+                success: false,
+                message: 'No user found',
+                error:{
+                    code: 404,
+                    details:"The user with the given id was not found."                    
+                }
+             });
+          } else {
+            res.status(200).json({
+              success: true,
+              message: 'user update successfully',
+              data: updateUser,
             });
           }
         
@@ -71,5 +107,6 @@ const singleUserById = async(req: Request, res: Response)=>{
 export const createUserController = {
     createUser,
     allUsers,
-    singleUserById
+    singleUserById,
+    updateSingleUser
 }
