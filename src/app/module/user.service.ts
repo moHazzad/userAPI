@@ -27,6 +27,7 @@ const getAllUserUserFromDb = async()=>{
     ])
     return result
 }
+
 const getSingleUserById = async(userId: number)=>{
 
     const result= await userModel.findOne({userId})
@@ -45,28 +46,31 @@ const deleteUser =async (userId: number) => {
     
 }
 
+// order 
 // add order to the user 
 const addOrderToUser = async (userId:number,orderData:object  )=>{
-    // const user =await getSingleUserById(userId);
-    const user = await userModel.findOne({ userId });
-    // console.log("user before adding orders", user);
+    // finding user by id 
+    const user =await getSingleUserById(userId);
+    
     if (!user) {
         throw new Error('The user does not exist')       
     }
     if (!user.orders) {
         user.orders=[];   
     }
-    // user.orders = [...user.orders, ...order]
-    //  await user.save()
-    // console.log("user after adding orders ",user );
-    user.orders.push(orderData);
-
-    // Save the updated user
+    // if order available will add or create new 
+    user.orders = [...user.orders, {...orderData}] 
     await user.save();
 
     return user;
 
 
+}
+
+const getSingleUserOrderFromDb =async (userId: number) => {
+    const user = await getSingleUserById(userId) ;
+    return user?.orders || null;
+    
 }
 
 
@@ -76,5 +80,6 @@ export const userService = {
     getSingleUserById,
     updateUserInformation,
     deleteUser,
-    addOrderToUser
+    addOrderToUser,
+    getSingleUserOrderFromDb
 }
