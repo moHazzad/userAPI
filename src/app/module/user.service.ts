@@ -8,6 +8,7 @@ const createUserInDb =async (userData: User) => {
     return result
 }
 
+//  retrieve all user with specific field 
 const getAllUserUserFromDb = async()=>{
     const result = await userModel.aggregate([
         {
@@ -17,15 +18,21 @@ const getAllUserUserFromDb = async()=>{
                 age: 1,
                 email: 1 ,
                 address: 1 
-
             }
         }
     ])
     return result
 }
+const getSingleUserById = async(userId: number)=>{
+
+    const result= await userModel.findOne({userId})
+    return  result;
+
+} 
 
 
 export const userService = {
     createUserInDb,
-    getAllUserUserFromDb
+    getAllUserUserFromDb,
+    getSingleUserById
 }
