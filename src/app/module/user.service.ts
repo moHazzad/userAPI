@@ -31,9 +31,6 @@ const getAllUserUserFromDb = async()=>{
 const getSingleUserById = async(userId: number)=>{
 
     const result= await userModel.findOne({userId})
-    if (!result) {
-        return { message: "User not found"}
-    }
     return result;
 
 } 
@@ -52,21 +49,25 @@ const deleteUser =async (userId: number) => {
 // order 
 // add order to the user 
 const addOrderToUser = async (userId:number,orderData:object  )=>{
-    // finding user by id 
-    const user =await getSingleUserById(userId);
-    
+
+    const user = await getSingleUserById(userId);
+
+    // Check if user is not null
     if (!user) {
-        throw new Error('The user does not exist')       
+        throw new Error('User not found');
     }
+
+    // Ensure the orders array is initialized
     if (!user.orders) {
-        user.orders=[];   
+        user.orders = [];
     }
-    // if order available will add or create new 
-    user.orders = [...user.orders, {...orderData}] 
+
+    user.orders.push(orderData);
+
+    // Save the updated user
     await user.save();
 
     return user;
-
 
 }
 
@@ -77,7 +78,7 @@ const getSingleUserOrderFromDb =async (userId: number) => {
     } else{
         if (!user?.orders || user?.orders?.length === 0) {
         // if the orders array is empty 
-        return { message: "No orders found for this user." };
+        return;
     }
     return user.orders;
     }
