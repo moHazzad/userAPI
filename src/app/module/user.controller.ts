@@ -11,12 +11,20 @@ const createUser = async(req: Request, res: Response) =>{
         //saving to db
         const result = await userService.createUserInDb(zodParsedData)
 
-        res.status(200).json({
-            success: true,
-            message: 'user is created successfully',
-            data: result,
-          });
-        
+        if (!result) {
+            return res
+            .status(404)
+            .json({
+                success: false,
+                message: 'user not created'
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'user is created successfully',
+                data: result,
+              });
+        }    
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -42,6 +50,11 @@ const allUsers = async(req: Request, res: Response)=>{
           }
     } catch (err) {
         console.log(err);
+        res.status(500).json({
+            success: false, 
+            message: 'Error in retrieving user', 
+            error: err
+         });
     }
 }
 
@@ -70,11 +83,18 @@ const singleUserById = async(req: Request, res: Response)=>{
         
     } catch (err) {
         console.log(err);
+        res.status(500).json({
+            success: false, 
+            message: 'Error retrieved  user', 
+            error: err
+         });
     }
 
 }
 
+// update user info 
 const updateSingleUser = async(req: Request, res: Response)=>{
+    // getting user id to find the exect user and the body of update info 
     const userId = parseInt(req.params.userId)
     const updateInfo = req.body
     try {
@@ -100,13 +120,50 @@ const updateSingleUser = async(req: Request, res: Response)=>{
         
     } catch (err) {
         console.log(err);
+        res.status(500).json({
+            success: false, 
+            message: 'Error update user', 
+            error: err
+         });
     }
 
+}
+
+const deleteSingleUser =async (req: Request, res:Response) => {
+    const userId = parseInt(req.params.userId)
+    const result = await userService.deleteUser(userId)
+    try {
+        if (!result) {
+            return res
+            .status(404)
+            .json({
+                success :false ,
+                message :"User Not Found",
+            })
+        } else {
+            res.status(200).json({
+                success :true ,
+                message :`Delete User Successfully`,
+                data: null
+            })
+            
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false, 
+            message: 'Error deleting user', 
+            error: error
+         });
+    }
+
+
+    
 }
 
 export const createUserController = {
     createUser,
     allUsers,
     singleUserById,
-    updateSingleUser
+    updateSingleUser,
+    deleteSingleUser
 }

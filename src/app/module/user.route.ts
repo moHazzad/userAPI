@@ -5,7 +5,8 @@ const router = express.Router()
 
 router.get('/users', createUserController.allUsers )
 router.get('/users/:userId', createUserController.singleUserById )
-router.patch('/users/:userId', createUserController.updateSingleUser )
+router.put('/users/:userId', createUserController.updateSingleUser )
+router.delete('/users/:userId', createUserController.deleteSingleUser )
 router.post('/users', createUserController.createUser )
 
 export const UserRoute = router
